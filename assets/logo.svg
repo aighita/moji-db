@@ -63,7 +63,7 @@
     font-size="22"
     font-weight="700"
     text-anchor="middle"
-    fill="#000000ff">
+    fill="#ffffffff">
     文字
   </text>
 </svg>
