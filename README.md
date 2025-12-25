@@ -11,25 +11,25 @@ The database stores user progress (time, accuracy, streak, score) in recognition
 
 ### Prerequisites
 - **Docker** installed on your machine.
+- **Python 3.9+** (optional, for running tests locally).
 
 ### Installation & Setup
 
-1.  **Start the Oracle Database Container**
-    ```bash
-    ./install-oracle-container.sh [container_name] [password]
-    ```
-    *Default: container=`bdd-proiect`, password=`password`*
+The project uses a `Makefile` to automate all tasks.
 
-2.  **Create Database Tables**
+1.  **Full Setup (Recommended)**
+    This command starts the DB container, cleans existing data, creates tables, loads fixtures, initializes procedures, and runs the app.
     ```bash
-    ./tables-create.sh
+    make all
     ```
 
-3.  **Load Fixtures (Sample Data)**
-    Populates the database with initial data (Continents, Writing Systems, Games) and generates synthetic data for Users and Game History.
-    ```bash
-    ./fixtures-load.sh
-    ```
+2.  **Individual Steps**
+    *   **Start Database**: `make install-db`
+    *   **Create Schema & Load Data**: `make setup-db`
+    *   **Load Stored Procedures**: `make init-procedures`
+    *   **Run Application**: `make run-app`
+    *   **Run Tests**: `make test`
+    *   **Clean Database**: `make clean`
 
 ## 📂 Database Schema
 
@@ -47,12 +47,33 @@ The database consists of the following tables:
 | **GAMES_HISTORY** | Records of played games, including score, accuracy, and duration. |
 | **USER_STATS** | Aggregated statistics for each user (total score, level, etc.). |
 
+## 📂 Project Structure
+
+```
+.
+├── app/                # Streamlit Application
+│   ├── src/            # Python Source Code (gui.py, database.py)
+│   └── Dockerfile      # App Container Configuration
+├── db/                 # Database SQL Files
+│   ├── tables/         # Table definitions (DDL)
+│   ├── fixtures/       # Initial data & Generators (DML)
+│   ├── procedures/     # Stored Procedures (Reports)
+│   └── triggers/       # Database Triggers
+├── scripts/            # Automation Scripts
+│   ├── app/            # App management scripts
+│   └── db/             # Database management scripts
+├── tests/              # Python Tests (pytest)
+└── Makefile            # Task Runner
+```
+
 ## 🛠 Scripts Reference
 
 | Script | Description |
 | :--- | :--- |
-| `install-oracle-container.sh` | Pulls and runs the Oracle Express Edition Docker container. |
-| `tables-create.sh` | Executes `Tables.sql` to create the database schema. |
-| `tables-drop.sh` | Drops all project tables (clean slate). |
-| `fixtures-load.sh` | Executes `Fixtures.sql` to insert static and generated data. |
-| `fixtures-delete.sh` | Deletes all data from tables without dropping the tables themselves. |
+| `scripts/db/install-oracle-container.sh` | Starts the Oracle XE container (checks if exists). |
+| `scripts/db/tables/create.sh` | Creates all tables from `db/tables/` in dependency order. |
+| `scripts/db/tables/drop.sh` | Drops all project tables. |
+| `scripts/db/fixtures/load.sh` | Loads data from `db/fixtures/`. |
+| `scripts/db/procedures/load.sh` | Compiles stored procedures from `db/procedures/`. |
+| `scripts/app/run.sh` | Builds and runs the Streamlit app container. |
+
