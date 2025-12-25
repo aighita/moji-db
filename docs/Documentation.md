@@ -60,20 +60,41 @@ Proiectul conține **7 tabele** principale:
 
 ### 2.4. Descrierea Procedurilor și Funcțiilor
 
-Pentru generarea rapoartelor, au fost implementate 3 proceduri stocate PL/SQL:
+Logica de business complexă este încapsulată în proceduri stocate PL/SQL, asigurând performanță și securitate.
+
+**Proceduri Stocate (Rapoarte):**
 
 1.  **`report_game_history`** (Complexitate 4+):
-    *   Returnează istoricul detaliat al unui utilizator, filtrat după joc și acuratețe.
-    *   Folosește `JOIN` între 4 tabele, calcul derivat pentru durată și limitare de rânduri (`FETCH FIRST`).
+    *   **Scop**: Oferă un istoric detaliat al sesiunilor de joc pentru un utilizator.
+    *   **Parametri**: `p_user_id`, `p_game_id`, `p_ws_id`, `p_min_accuracy`.
+    *   **Logică**: Realizează `JOIN` între tabelele `GAMES_HISTORY`, `GAMES`, `WRITING_SYSTEMS` și `USERS`. Filtrează rezultatele dinamic și calculează durata sesiunii.
+
 2.  **`report_top_players`** (Complexitate 6+):
-    *   Identifică jucătorii de top pe baza unei medii de acuratețe și a comparației cu media globală de timp.
-    *   Folosește funcții fereastră (`ROW_NUMBER`), subinterogări și agregări globale.
+    *   **Scop**: Identifică jucătorii de top pe baza performanței relative.
+    *   **Parametri**: `p_game_id`, `p_ws_id`.
+    *   **Logică**: Utilizează funcții analitice (`ROW_NUMBER`) pentru a clasifica jucătorii. Include subinterogări pentru a calcula media globală a timpului de joc și selectează doar utilizatorii care au depășit această medie cu o acuratețe ridicată.
+
 3.  **`report_elite_regional`** (Complexitate 7+):
-    *   Analizează jucătorii dintr-o regiune (continent) într-o lună specifică.
-    *   Verifică condiții complexe: "a jucat toate jocurile" (folosind `MINUS` și `NOT EXISTS`) și "a jucat cel mai greu sistem de scriere".
+    *   **Scop**: Analiză avansată a jucătorilor "de elită" dintr-o anumită regiune geografică.
+    *   **Parametri**: `p_game_id`, `p_continent_name`, `p_min_games`, `p_min_playtime`.
+    *   **Logică**:
+        *   Agregare complexă (`GROUP BY`) pe ultimele 12 luni.
+        *   Diviziune relațională (simulată prin `MINUS` și `NOT EXISTS`) pentru a găsi jucătorii care au încercat **toate** jocurile disponibile.
+        *   Verificare existențială (`EXISTS`) pentru a confirma dacă au jucat cel mai dificil sistem de scriere.
 
 **Triggere:**
-*   `trg_update_user_stats`: Se declanșează `AFTER INSERT` pe `GAMES_HISTORY`. Actualizează automat tabelul `USER_STATS` (incrementează nr. jocuri, recalculează media acurateței, actualizează nivelul și XP-ul) fără a fi nevoie de logică în aplicație.
+
+1.  **`trg_update_user_stats`**:
+    *   **Tip**: `AFTER INSERT` pe `GAMES_HISTORY`.
+    *   **Logică**: Menține automat tabelul de agregare `USER_STATS`. La fiecare joc nou, incrementează numărul total de jocuri, recalculează media mobilă a acurateței și actualizează scorul total și nivelul utilizatorului.
+
+2.  **`trg_users_soft_delete`**:
+    *   **Tip**: `BEFORE UPDATE` pe `USERS`.
+    *   **Logică**: Setează automat câmpul `deleted_at` la timestamp-ul curent atunci când statusul unui utilizator devine 'deleted', implementând ștergerea logică.
+
+3.  **`trg_user_stats_timestamp`**:
+    *   **Tip**: `BEFORE UPDATE` pe `USER_STATS`.
+    *   **Logică**: Actualizează automat coloana `updated_at` la fiecare modificare a statisticilor.
 
 ## 3. Descrierea Aplicației
 
@@ -147,13 +168,15 @@ Conexiunea se realizează folosind biblioteca `cx_Oracle` (sau `oracledb`).
 ## 4. Capturi de Ecran
 
 ### Raport 1: Istoric Jocuri (Tabelar)
-*(Aici se va insera un screenshot cu output-ul procedurii 1, arătând lista de jocuri, scoruri și acuratețe)*
+![Raport1](../assets/screenshots/Report1.GameHistory.jpeg)
 
 ### Raport 2: Top Jucători (Grafic)
-*(Aici se va insera un screenshot cu un grafic de bare reprezentând scorurile celor mai buni jucători)*
+![Raport2_1](../assets/screenshots/Report2_1.TopPlayersPerformance.jpeg)
+![Raport2_2](../assets/screenshots/Report2_2.TopPlayersPerformance.jpeg)
 
 ### Raport 3: Analiza Regională
-*(Aici se va insera un screenshot cu distribuția jucătorilor de elită pe țări)*
+![Raport3_1](../assets/screenshots/Report3_1.EliteRegionalAnalysis.jpeg)
+![Raport3_2](../assets/screenshots/Report3_2.EliteRegionalAnalysis.jpeg)
 
 ## 5. Concluzii
 
