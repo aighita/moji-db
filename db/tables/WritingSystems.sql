@@ -1,0 +1,5 @@
+CREATE TABLE WRITING_SYSTEMS(
+    id          NUMBER(10) PRIMARY KEY,
+    name        VARCHAR2(30 CHAR) NOT NULL UNIQUE,
+    difficulty  NUMBER(2) NOT NULL CHECK (difficulty BETWEEN 1 AND 3)
+);

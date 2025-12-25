@@ -1,0 +1,7 @@
+CREATE OR REPLACE TRIGGER trg_user_stats_timestamp
+BEFORE UPDATE ON USER_STATS
+FOR EACH ROW
+BEGIN
+    :NEW.updated_at := SYSTIMESTAMP;
+END;
+/
