@@ -9,9 +9,12 @@
 **Moji** este o aplicație educațională dedicată învățării sistemelor de scriere japoneze (Hiragana, Katakana, Kanji). Aplicația oferă utilizatorilor o platformă interactivă prin care își pot exersa cunoștințele prin diverse mini-jocuri (citire, ascultare, scriere).
 
 Scopul principal al bazei de date **Moji DB** este de a stoca și gestiona:
-1.  **Utilizatorii și profilurile acestora** (inclusiv țara de origine și statisticile agregate).
-2.  **Conținutul educațional** (sisteme de scriere, tipuri de jocuri).
-3.  **Istoricul detaliat al activității** (fiecare sesiune de joc este înregistrată cu metrici precise: timp, acuratețe, scor, streak).
+
+1. **Utilizatorii și profilurile acestora** - inclusiv țara de origine și statisticile agregate.
+
+2. **Conținutul educațional** - sisteme de scriere și tipuri de jocuri.
+
+3. **Istoricul detaliat al activității** - fiecare sesiune de joc este înregistrată cu metrici precise: timp, acuratețe, scor, streak.
 
 Această structură permite generarea de rapoarte complexe privind performanța utilizatorilor, identificarea celor mai dificile sisteme de scriere și analiza angajamentului pe regiuni geografice.
 
@@ -23,10 +26,11 @@ Sistemul de Gestiune a Bazei de Date (SGBD) ales este **Oracle SQL**. Baza de da
 
 ![Database Schema](../assets/db/schema.svg)
 
-*Relații principale:*
-*   `USERS` -> `COUNTRIES` -> `CONTINENTS`
-*   `GAMES_HISTORY` -> `USERS`, `GAMES`, `WRITING_SYSTEMS`
-*   `USER_STATS` -> `USERS` (relație 1:1)
+**Relații principale:**
+
+- `USERS` -> `COUNTRIES` -> `CONTINENTS`
+- `GAMES_HISTORY` -> `USERS`, `GAMES`, `WRITING_SYSTEMS`
+- `USER_STATS` -> `USERS` (relație 1:1)
 
 ### 2.2. Structura Tabelelor
 
@@ -99,43 +103,19 @@ Proiectul conține **7 tabele** principale:
 Aplicația este dezvoltată în **Python** și servește drept interfață pentru vizualizarea datelor din Oracle.
 
 ### 3.1. Arhitectura Aplicației
-Aplicația este construită folosind limbajul **Python** și framework-ul **Streamlit** pentru interfața grafică. Arhitectura urmează un model simplificat MVC (Model-View-Controller), unde:
-*   **Model**: Baza de date Oracle și procedurile stocate.
-*   **Controller**: Clasa `OracleConnection` din `database.py` care gestionează logica de acces la date.
-*   **View**: Funcțiile de randare din `gui.py` care afișează datele utilizatorului.
+Aplicația este construită folosind limbajul **Python** și framework-ul **Streamlit** pentru interfața grafică. Arhitectura urmează un model simplificat MVC (Model-View-Controller).
+
+În acest model:
+
+- **Model:** Baza de date Oracle și procedurile stocate.
+- **Controller:** Clasa `OracleConnection` din `database.py` care gestionează logica de acces la date.
+- **View:** Funcțiile de randare din `gui.py` care afișează datele utilizatorului.
 
 ### 3.2. Diagrama de Clase
-Deși Python nu impune o structură strictă de clase, aplicația este organizată modular:
+Deși Python nu impune o structură strictă de clase, aplicația este organizată modular (*Figura 2: Class Diagram*).
 
-```mermaid
-classDiagram
-    class OracleConnection {
-        +host: str
-        +port: int
-        +schema: str
-        +username: str
-        +password: str
-        +db: Connection
-        +cursor: Cursor
-        +openConnection()
-        +closeConnection()
-        +report_game_history(user_id, game_id, ws_id, min_acc)
-        +report_top_players(game_id, ws_id)
-        +report_elite_regional(game_id, continent, min_games, min_time)
-        +get_all_tables()
-        +view_table_data(table_name)
-    }
 
-    class GUI {
-        +main()
-        +render_game_history(db)
-        +render_top_players(db)
-        +render_elite_regional(db)
-        +render_database_viewer(db)
-    }
-
-    GUI --> OracleConnection : uses
-```
+![Class Diagram](./assets/app/diagram.png)
 
 ### 3.3. Structura Claselor
 *   **`OracleConnection`**: Această clasă încapsulează toate interacțiunile cu baza de date.
@@ -158,10 +138,11 @@ Fluxul tipic de utilizare al aplicației:
 
 ### 3.5. Conexiunea cu Baza de Date
 Conexiunea se realizează folosind biblioteca `cx_Oracle` (sau `oracledb`).
-*   **Driver**: Oracle Instant Client (inclus în imaginea Docker).
-*   **DSN (Data Source Name)**: Construit din host, port și service name (`XEPDB1`).
-*   **Securitate**: Credențialele sunt preluate din variabile de mediu sau fișiere de configurare, nu sunt hardcodate în codul sursă final.
-*   **Optimizare**: Conexiunea este cache-uită de Streamlit (`@st.cache_resource`) pentru a evita reconectarea la fiecare reîncărcare a paginii.
+
+- **Driver:** Oracle Instant Client (inclus în imaginea Docker).
+- **DSN (Data Source Name):** Construit din host, port și service name (`XEPDB1`).
+- **Securitate:** Credențialele sunt preluate din variabile de mediu sau fișiere de configurare, nu sunt hardcodate în codul sursă final.
+- **Optimizare:** Conexiunea este cache-uită de Streamlit (`@st.cache_resource`) pentru a evita reconectarea la fiecare reîncărcare a paginii.
 
 ## 4. Capturi de Ecran
 

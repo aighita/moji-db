@@ -1,0 +1,27 @@
+classDiagram
+    class OracleConnection {
+        host : str
+        port : int
+        schema : str
+        username : str
+        password : str
+        db : Connection
+        cursor : Cursor
+        openConnection()
+        closeConnection()
+        report_game_history(user_id, game_id, ws_id, min_acc)
+        report_top_players(game_id, ws_id)
+        report_elite_regional(game_id, continent, min_games, min_time)
+        get_all_tables()
+        view_table_data(table_name)
+    }
+
+    class GUI {
+        main()
+        render_game_history(db)
+        render_top_players(db)
+        render_elite_regional(db)
+        render_database_viewer(db)
+    }
+
+    GUI --> OracleConnection : uses
