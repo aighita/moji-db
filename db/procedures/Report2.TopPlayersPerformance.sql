@@ -38,7 +38,7 @@ BEGIN
     ) best_play ON u.id = best_play.user_id AND best_play.rn = 1
     WHERE 
         -- Criteria: Account created in 2025 (Updated to match Fixtures data)
-        EXTRACT(YEAR FROM u.created_at) = 2025
+        EXTRACT(YEAR FROM u.created_at) = 2026
         -- Criteria: Personal Average Accuracy > 50%
       AND stats.avg_accuracy > 50
         -- Criteria: Streak > 50% of Max Streak
