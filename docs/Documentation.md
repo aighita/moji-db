@@ -60,8 +60,6 @@ Proiectul conține **7 tabele** principale:
 
 ### 2.4. Descrierea Procedurilor și Funcțiilor
 
-Logica de business complexă este încapsulată în proceduri stocate PL/SQL, asigurând performanță și securitate.
-
 **Proceduri Stocate (Rapoarte):**
 
 1.  **`report_game_history`** (Complexitate 4+):
@@ -185,5 +183,6 @@ Proiectul **Moji DB** demonstrează o arhitectură robustă pentru o aplicație 
 ## 6. Bibliografie
 
 1.  Oracle Database SQL Language Reference.
-2.  Documentația cursului Baze de Date (2025).
+2.  Documentația cursului Baze de Date 
 3.  Python `oracledb` Documentation.
+4. [Laboratoare OCW](https://ocw.cs.pub.ro/courses/bdd)
