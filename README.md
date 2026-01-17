@@ -33,7 +33,7 @@ The project uses a `Makefile` to automate all tasks.
 
 ## 📂 Database Schema
 
-![Database Schema](./assets/schema.svg)
+![Database Schema](./assets/db/schema.svg)
 
 The database consists of the following tables:
 
