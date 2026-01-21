@@ -29,7 +29,7 @@ def get_db_connection() -> OracleConnection:
 # --- Report Views ---
 
 def render_game_history(db: OracleConnection):
-    st.header("📜 Game History Report")
+    st.header("Game History Report")
     st.markdown("View detailed history of games played by a user.")
     
     with st.form("game_history_form"):
@@ -73,7 +73,7 @@ def render_game_history(db: OracleConnection):
             st.warning("No data found for these criteria.")
 
 def render_top_players(db: OracleConnection):
-    st.header("🏆 Top Players Report")
+    st.header("Top Players Report")
     st.markdown("Identify top performing players based on complex criteria.")
     
     with st.form("top_players_form"):
@@ -106,7 +106,7 @@ def render_top_players(db: OracleConnection):
             st.info("No players met the 'Top Player' criteria.")
 
 def render_elite_regional(db: OracleConnection):
-    st.header("🌍 Elite Regional Analysis")
+    st.header("Elite Regional Analysis")
     st.markdown("Analyze elite players by region (continent).")
     
     # Fetch continents for dropdown
@@ -151,7 +151,7 @@ def render_elite_regional(db: OracleConnection):
             st.info("No elite players found for this region.")
 
 def render_database_viewer(db: OracleConnection):
-    st.header("🗄️ Database Viewer")
+    st.header("Database Viewer")
     st.markdown("Explore the raw data in the database tables.")
     
     tables = db.get_all_tables()
@@ -196,29 +196,29 @@ def main():
 
         report_type = None
         if view_mode == "Reports":
-            st.subheader("📊 Reports")
+            st.subheader("Reports")
             report_type = st.selectbox(
                 "Choose Analysis",
                 ["Game History", "Top Players", "Elite Regional Analysis"]
             )
         elif view_mode == "Database Viewer":
-            st.subheader("🗄️ Data Explorer")
+            st.subheader("Data Explorer")
             st.info("Direct access to raw database tables.")
 
         st.markdown("---")
         st.markdown("### System Status")
         status_placeholder = st.empty()
         
-        st.markdown("---")
-        st.caption("© 2025 Moji Project")
+        # st.markdown("---")
+        # st.caption("© 2025 Moji Project")
 
     # --- Main Content ---
     
     try:
         db = get_db_connection()
-        status_placeholder.success("✅ Oracle DB Connected")
+        status_placeholder.success("Oracle DB Connected")
     except Exception as e:
-        status_placeholder.error("❌ DB Connection Failed")
+        status_placeholder.error("DB Connection Failed")
         st.error(f"Failed to connect to database: {e}")
         return
 
